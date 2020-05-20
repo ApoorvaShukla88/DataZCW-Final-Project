@@ -17,18 +17,20 @@ records_to_insert = list()
 
 metadata = MetaData()
 scores = Table('sentiment_score', metadata,
-    Column('tweet', Text()),
-    Column('location', String(255)),
-    Column('timestamp', String(255)),
-    Column('score', String(255)),
-)
-
+               Column('tweet', Text()),
+               Column('id', Integer()),
+               Column('location', String(255)),
+               Column('timestamp', String(255)),
+               Column('score', String(255)),
+               )
 
 for message in consumer:
     print(message)
     message = str(message.value)
     details = message.split(",")
-    record = {'tweet':details[0], 'location':details[1], 'timestamp':details[2], 'score':details[3]}
+    print(details)
+    record = {'tweet': details[0], 'id': (details[1]), 'location': details[2], 'timestamp': details[3],
+              'score': details[4]}
     records_to_insert.append(record)
     if len(records_to_insert) == 100:
         engine.execute(scores.insert(), records_to_insert)

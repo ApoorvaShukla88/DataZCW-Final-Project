@@ -45,9 +45,12 @@ class TweetListner(StreamListener):
             location = re.sub(r',', ' ', location)
             print(str(location) + "\n")
             timestamp = ''
+            id_str = ''
             if json_data['created_at'] is not None:
                 timestamp = json_data['created_at']
-            self.producer.produce(bytes(json.dumps(str(tweet) + "," + str(location) +
+            if json_data['id_str'] is not None:
+                id_str = json_data['id_str']
+            self.producer.produce(bytes(json.dumps(str(tweet) + "," + str(id_str) + "," + str(location) +
                                                    "," + str(timestamp)).encode('utf-8')))
         except KeyError as e:
             print("Error in data")
@@ -61,10 +64,10 @@ class TweetListner(StreamListener):
 
 
 def connect_to_twitter(kafkaProducer, tracks):
-    twitterApiKey = ""
-    twitterApiSecret = ''
-    twitterApiToken = ''
-    twitterApiTokenSecret = ''
+    twitterApiKey = 'ouE3gE7jGCG9IYg4zJIsS1vv3'
+    twitterApiSecret = 'ESHRBROxm7KVOuFclxlUlP1izuwK2inX27PfHPSXx2IqImqKEo'
+    twitterApiToken = '1258425294932914176-NZgrg0mK3NTRWTdaHglvpEiqM23jIi'
+    twitterApiTokenSecret = 'tkFYw1Idp7IBrNDptQjEsNshS1wpwnP3zh6qoZyLYmUbY'
 
     auth = OAuthHandler(twitterApiKey, twitterApiSecret)
     auth.set_access_token(twitterApiToken, twitterApiTokenSecret)

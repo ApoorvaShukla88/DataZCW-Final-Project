@@ -25,8 +25,8 @@ if __name__ == "__main__":
         .option("subscribe", topic) \
         .load()
 
-    tweetsDF = tweetsDFRaw.selectExpr("split(value,',')[0] as tweet", "split(value,',')[1] as location",
-                                      "split(value,',')[2] as timestamp")
+    tweetsDF = tweetsDFRaw.selectExpr("split(value,',')[0] as tweet", "split(value,',')[1] as id_str",
+                                    "split(value,',')[2] as location","split(value,',')[3] as timestamp", )
 
     analyser = SentimentIntensityAnalyzer()
 
@@ -49,8 +49,8 @@ if __name__ == "__main__":
             elif score['compound'] == 0.0:
                 return 'Neutral'
 
-    def add_value(tweet,location,timestamp,score):
-        return str(tweet) + "," + str(location) + "," + str(timestamp) + "," + str(score)
+    def add_value(tweet,id_str,location,timestamp,score):
+        return str(tweet) + "," + str(id_str) + "," + str(location) + "," + str(timestamp) + "," + str(score)
 
 
     add_sentiment_score_udf = udf(
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     tweetsDF = tweetsDF.withColumn(
         "value",
-        add_value_udf(tweetsDF.tweet,tweetsDF.location,tweetsDF.timestamp,tweetsDF.sentiment_score)
+        add_value_udf(tweetsDF.tweet,tweetsDF.id_str,tweetsDF.location,tweetsDF.timestamp,tweetsDF.sentiment_score)
     )
 
     tweetsDFNew = tweetsDF.select("value")
