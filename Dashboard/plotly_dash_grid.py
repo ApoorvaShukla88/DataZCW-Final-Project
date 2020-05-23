@@ -1,14 +1,15 @@
 import dash  
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
 import pandas as pd
 import plotly.express as px 
 import plotly.graph_objects as go
 
-
 app = dash.Dash(__name__)
+app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])   # DARKLY, LUX, SOLAR, FLATLY, MINTY, CYBORG
 
 # ------------------------------------------------------------------------------
 # Import and clean data (importing csv into pandas)
@@ -17,9 +18,41 @@ df['date'] = pd.to_datetime(df['date'])
 # ------------------------------------------------------------------------------
 # App layout
 
-app.layout = html.Div([
+app.layout = html.Div(
+    html.Div([
+            className="grid-container")
+    html.Div( className="Header")
+        html.Div( className="Period-Selection")
+        html.Div( className="Theme")
+        html.Div(
+            [   
+                html.H1(children="Covid-19 Sentiment Dasboard",
+                        className="Title",
+                        style={
+                            'height': '9%',
+                            'width': '9%',
+                            'float': 'right',
+                            'position': 'relative',
+                            'padding-top': 0,
+                            'padding-right': 0,
+                            'text-align': 'center'
+                        },
+                )
+            ]
+        )
 
-    html.H1("Covid-19 Sentiment Dasboard", style={'text-align': 'center'}),
+        html.Div( className="Logo\?")
+    html.Div()
+    html.Div( className="Heat-Map")
+    html.Div( className="Word-Cloud")
+    html.Div( className="Bar-Chart")
+    html.Div( className="Articles")
+    html.Div( className="Tweets")
+    html.Div( className="Misc")
+    html.Div( className="Misc2")
+    html.Div( className="Misc3")
+    html.Div()
+)
 
     dcc.Dropdown(id="select_sentiment",
                  options=[
@@ -85,7 +118,9 @@ def update_graph(option_select):
         hover_data=['location', 'sentiment_score'],
         color_continuous_scale=px.colors.sequential.YlOrRd,
         labels={'sentiment_score': 'Sentiment Score'},
-        template='plotly_dark')
+        template='plotly_dark')    #  ['ggplot2', 'seaborn', 'simple_white', 'plotly', 'plotly_white', 'plotly_dark', 'presentation', 'xgridoff', 'ygridoff', 'gridon', 'none']
+        
+
 
     #Plotly Graph Objects (GO)
     # fig = go.Figure(
