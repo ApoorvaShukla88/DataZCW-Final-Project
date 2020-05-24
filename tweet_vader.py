@@ -26,7 +26,7 @@ if __name__ == "__main__":
         .load()
 
     tweetsDF = tweetsDFRaw.selectExpr("split(value,',')[0] as tweet", "split(value,',')[1] as id_str",
-                                    "split(value,',')[2] as location","split(value,',')[3] as timestamp", )
+                                      "split(value,',')[2] as location", "split(value,',')[3] as timestamp", )
 
     analyser = SentimentIntensityAnalyzer()
 
@@ -49,7 +49,8 @@ if __name__ == "__main__":
             elif score['compound'] == 0.0:
                 return 'Neutral'
 
-    def add_value(tweet,id_str,location,timestamp,score):
+
+    def add_value(tweet, id_str, location, timestamp, score):
         return str(tweet) + "," + str(id_str) + "," + str(location) + "," + str(timestamp) + "," + str(score)
 
 
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
     tweetsDF = tweetsDF.withColumn(
         "value",
-        add_value_udf(tweetsDF.tweet,tweetsDF.id_str,tweetsDF.location,tweetsDF.timestamp,tweetsDF.sentiment_score)
+        add_value_udf(tweetsDF.tweet, tweetsDF.id_str, tweetsDF.location, tweetsDF.timestamp, tweetsDF.sentiment_score)
     )
 
     tweetsDFNew = tweetsDF.select("value")
@@ -80,11 +81,11 @@ if __name__ == "__main__":
         .outputMode("append") \
         .format("kafka") \
         .option("kafka.bootstrap.servers", host + ":" + port) \
-        .option("topic","tweet_sentiment_score")\
+        .option("topic", "tweet_sentiment_score") \
         .option("truncate", "false") \
-        .option("checkpointLocation", "/Users/amishra/DEV/checkpoint")\
+        .option("checkpointLocation", "/Users/amishra/DEV/checkpoint") \
         .start() \
         .awaitTermination()
 
-#.selectExpr("split(value,',')[0] as tweet", "split(value,',')[1] as location",
-#            "split(value,',')[2] as timestamp", "split(value,',')[3] as sentiment_score")\
+# .selectExpr("split(value,',')[0] as tweet", "split(value,',')[1] as location",
+#            "split(value,',')[2] as timestamp", "split(value,',')[3] as sentiment_score")
